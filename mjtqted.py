@@ -4,11 +4,27 @@ try:
     from PySide import QtWidgets
     from PySide import QtCore
 except:
-    from PyQt4.QtCore import pyqtSlot as Slot
-    from PyQt4 import QtWidgets
-    from PyQt4 import QtCore
+    from PyQt5 import QtWidgets
+    from PyQt5 import QtCore
+    from PyQt5 import uic
 
-class MainWindow(QMainWindow):
+import sys
+
+
+class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-        QMainWindow.__init__(self)
+        QtWidgets.QMainWindow.__init__(self)
         pass
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    main_window = MainWindow()
+    ui = uic.loadUi('mainwindow.ui', baseinstance=main_window)
+
+    ui.action_Quit.triggered.connect(QtCore.QCoreApplication.instance().quit)
+
+    main_window.show()
+
+    sys.exit(app.exec_())
+
