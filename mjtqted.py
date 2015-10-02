@@ -106,6 +106,14 @@ class MainWindow(QtWidgets.QMainWindow):
             if reply == QtWidgets.QMessageBox.Yes:
                 document.clear()
 
+    @QtCore.pyqtSlot(name='on_pushButton_Refresh_clicked')
+    def refresh_plugins(self):
+        """Clear the registry and look for plugins
+        """
+
+        self.registry.clear()
+        self._get_plugins()
+
     @QtCore.pyqtSlot('QModelIndex', name='on_listView_Outputs_doubleClicked')
     def save_output(self, index):
         plugin = self.registry.item(index.row())
