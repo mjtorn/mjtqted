@@ -87,17 +87,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return reply
 
+    @QtCore.pyqtSlot(name='on_textEdit_textChanged')
+    def contents_changed(self):
+        """Do not consider the file saved if text is changed
+        """
+
+        self.textEdit.saved = False
+
     @QtCore.pyqtSlot(name='on_pushButton_New_clicked')
     def new_file(self):
         """Open a new file; if the current one's not saved, complain
         """
 
-        editor = self.textEdit
-
         # Toggled by listView_Outputs
-        saved = editor.saved
+        saved = self.textEdit.saved
 
-        document = editor.document()
+        document = self.textEdit.document()
         contents = document.toPlainText().strip()
 
         if contents and not saved:
@@ -120,6 +125,7 @@ class MainWindow(QtWidgets.QMainWindow):
         fname = self.lineEdit.text()
         content = '{}\n'.format(self.textEdit.document().toPlainText().strip())
         plugin.save(self, fname, content)
+        self.textEdit.saved = True
 
 if __name__ == '__main__':
     shutil.rmtree(EDITOR_PATH, ignore_errors=True)
