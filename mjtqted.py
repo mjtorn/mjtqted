@@ -94,6 +94,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.textEdit.saved = False
 
+    @QtCore.pyqtSlot(name='on_pushButton_Open_clicked')
+    def open_file(self):
+        """Open an existing file. Do not care about whether
+        or not the current input is saved.
+        """
+
+        fname = self.lineEdit.text()
+
+        document = QtGui.QTextDocument()
+        with open(fname, 'rb') as f:
+            document.setPlainText(str(f.read(), 'utf-8'))
+
+        self.textEdit.setDocument(document)
+
     @QtCore.pyqtSlot(name='on_pushButton_New_clicked')
     def new_file(self):
         """Open a new file; if the current one's not saved, complain
