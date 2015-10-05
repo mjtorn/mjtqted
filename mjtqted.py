@@ -52,7 +52,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 plugin_module = importlib.import_module(plugin_module_name)
 
                 for obj_name in dir(plugin_module):
+                    # XXX: Skip the superclass
                     obj = getattr(plugin_module, obj_name)
+
+                    if not hasattr(obj, 'name'):
+                        continue
 
                     # XXX: This could and/or should be stricter!
                     if type(obj) == QtCore.pyqtWrapperType:
