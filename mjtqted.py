@@ -105,11 +105,14 @@ class MainWindow(QtWidgets.QMainWindow):
         document = self.textEdit.document()
         contents = document.toPlainText().strip()
 
+        do_clear = True
         if contents and not saved:
             reply = self.ask_new_file()
 
-            if reply == QtWidgets.QMessageBox.Yes:
-                document.clear()
+            do_clear = (reply == QtWidgets.QMessageBox.Yes)
+
+        if do_clear:
+            document.clear()
 
     @QtCore.pyqtSlot(name='on_pushButton_Refresh_clicked')
     def refresh_plugins(self):
