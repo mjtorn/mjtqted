@@ -9,16 +9,40 @@ except:
     from PyQt5 import QtGui
     from PyQt5 import uic
 
+import functools
 import importlib
 import os
 import shutil
 import sys
+import traceback
 
 
 # XXX: Would be configurable in anything real
 EDITOR_PATH = os.path.join(os.path.expanduser('~'), '.mjtqted/')
 PLUGINS_PATH = os.path.join(EDITOR_PATH, 'plugins')
 sys.path.insert(0, PLUGINS_PATH)
+
+
+def handle_exception(func):
+    """Decorate anything that might raise an exception
+    """
+
+    @functools.wraps(func)
+    def wrapper(window, *args, **kwargs):
+        """Handle the exception
+        """
+
+        try:
+            return func(window, *args, **kwargs)
+        except Exception as e:
+            msg_title = str(e)
+            msg_contents = traceback.format_exc()
+            msg_button = QtWidgets.QMessageBox.Ok
+            # msg_default = QtWidgets.QMessageBox.Ok
+
+            return QtWidgets.QMessageBox.question(window, msg_title, msg_contents, msg_button)  #, msg_default)
+
+    return wrapper
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -99,6 +123,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.textEdit.saved = False
 
     @QtCore.pyqtSlot(name='on_pushButton_Open_clicked')
+    @handle_exception
     def open_file(self):
         """Open an existing file. Do not care about whether
         or not the current input is saved.
@@ -141,6 +166,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._get_plugins()
 
     @QtCore.pyqtSlot('QModelIndex', name='on_listView_Outputs_doubleClicked')
+    @handle_exception
     def save_output(self, index):
         plugin = self.registry.item(index.row())
         fname = self.lineEdit.text()
