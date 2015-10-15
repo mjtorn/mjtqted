@@ -9,6 +9,7 @@ except:
     from PyQt5 import QtGui
     from PyQt5 import uic
 
+import errno
 import functools
 import importlib
 import os
@@ -170,6 +171,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def save_output(self, index):
         plugin = self.registry.item(index.row())
         fname = self.lineEdit.text()
+
+        if os.path.exists(fname):
+            raise OSError('{} exists!'.format(fname), errno.EEXIST)
+
         content = '{}\n'.format(self.textEdit.document().toPlainText().strip())
         plugin.save(self, fname, content)
         self.textEdit.saved = True
