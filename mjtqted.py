@@ -80,10 +80,11 @@ class MainWindow(QtWidgets.QMainWindow):
                     # XXX: Skip the superclass
                     obj = getattr(plugin_module, obj_name)
 
+                    # The name attribute is also API
                     if not hasattr(obj, 'name'):
                         continue
 
-                    # XXX: This could and/or should be stricter!
+                    # XXX: Everything is pyqtWrapperType
                     if type(obj) == QtCore.pyqtWrapperType:
                         self.registry.appendRow(obj())
 
